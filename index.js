@@ -8,11 +8,20 @@ const swaggerSpec = swaggerJsDoc(swaggerOptions);
 
 // Express config and routes
 const express = require('express');
+const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
+app.use('/', express.json());
+app.use('/public', express.static(path.join(__dirname + '/public')));
+
+app.get('/downloads', (req, res) => {
+	const filename = req.query.file;
+	res.sendFile(path.join(__dirname + '/public/memes', filename));
+});
+
 const { apiRoutes } = require('./src');
 app.listen(port, () => {
-	console.log(`http://localhost:/${port}/`);
+	console.log(`http://localhost:${port}/`);
 });
 
 /**
@@ -56,6 +65,7 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 // Database config
 const databaseModule = require('./database');
+const exp = require('constants');
 databaseModule
 	.connect()
 	.then((client) => {

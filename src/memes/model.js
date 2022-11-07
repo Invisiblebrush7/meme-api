@@ -1,3 +1,10 @@
-class BaseModel {}
+const databaseModule = require('./../../database/database');
 
-exports.modules = {};
+class Meme {
+	static index() {
+		const collection = databaseModule.getDB().collection('meme');
+		return collection;
+	}
+}
+
+module.exports = Meme;

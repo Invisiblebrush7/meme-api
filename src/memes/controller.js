@@ -1,28 +1,19 @@
-const { collection } = require('../../database');
-const Meme = require('./Model');
-const { ObjectId } = require('mongodb');
+const Meme = require('./model');
+const databaseModule = require('../../database');
 
 class MemesController {
-	getAll(req, res) {
-		const meme = new Meme();
-		meme.findAll((err, results) => {
-			if (err) {
-				res.send([]);
-			} else {
-				res.send(results);
-			}
-		});
+	async index(req, res) {
+		const collection = Meme.index();
+		const memes = await collection.find().toArray();
+		res.json(memes);
 	}
-	getOne(req, res) {
-		const meme = new Meme();
-		const id = req.params.id;
-		meme.findOne({ _id: ObjectId(id) }).then((result) => {
-			console.log(result);
-			res.send(result);
-		});
+	async show(req, res) {
+		const collection = databaseModule.getDB().collection('memes');
+		const user = await collection.find({ _id: req.params.id }).toArray();
+		res.json(user);
 	}
-	create(req, res) {
-		console.log('Archivo', req.file);
+	async create(req, res) {
+		console.log('Archivo', req.file, req.body);
 		res.send('created');
 	}
 }

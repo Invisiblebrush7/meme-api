@@ -1,0 +1,17 @@
+{
+	"swagger": "2.0",
+	"swaggerDefinition": {
+		"info": {
+			"description": "Basic api project",
+			"version": "1.0.0",
+			"title": "Cool Bets Api",
+			"contact": {
+				"author": "Bets, obviously",
+				"email": "aromanog1@gmail.com"
+			}
+		},
+		"basePath": "/",
+		"host": "localhost:3000"
+	},
+	"apis": ["./index.js", "src/**/routes.js"]
+}

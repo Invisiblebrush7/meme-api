@@ -1,0 +1,3 @@
+class BaseModel {}
+
+exports.modules = {};

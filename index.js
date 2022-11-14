@@ -23,7 +23,7 @@ app.get('/downloads', (req, res) => {
 });
 
 const { apiRoutes } = require('./src');
-app.listen(port, () => {
+const server = app.listen(port, () => {
 	console.log(`http://localhost:${port}/`);
 });
 
@@ -66,22 +66,43 @@ app.use('/test/', (req, res) => {
 app.use('', apiRoutes);
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
+// Google auth config
 app.get('/google/:token', (req, res) => {
-	googleClient
-		.verifyIdToken({ idToken: req.params.token })
-		.then((response) => {
-			const data = response.getPayload();
-			console.log(data);
-			res.send('Token is valid');
-		})
-		.catch((err) => {
-			res.status(401).send('Token is not valid');
-		});
+	console.log('Hellou');
+	googleClient.verifyIdToken({ idToken: req.params.token });
+	cl.then((response) => {
+		const data = response.getPayload();
+		console.log(data);
+		res.send('Token is valid');
+	}).catch((err) => {
+		res.status(401).send('Token is not valid');
+	});
+});
+
+// Socket io
+const socketIO = require('socket.io');
+const io = socketIO(server, {
+	cors: {
+		origin: '*',
+		// methods: ['GET', 'POST'],
+		// allowHeaders: ['Authorization'],
+		// credentials: true,
+	},
+});
+
+io.on('connection', (socket) => {
+	// console.log('Alguien se conecto :D ', socket);
+
+	socket.on('share', (data) => {
+		console.log('Hellou desde el socket de api\n', data);
+
+		// io.emit('onShared', data); // emit comparte con todos, incluido tú
+		socket.broadcast.emit('onShared', data);
+	});
 });
 
 // Database config
 const databaseModule = require('./database');
-const exp = require('constants');
 databaseModule
 	.connect()
 	.then((client) => {
